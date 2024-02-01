@@ -8,6 +8,7 @@
             "name": "Nexus Reclaimed",
             "type": "python",
             "request": "launch",
+            "cwd": "${workspaceFolder}/src",
             "module": "main",
             "justMyCode": true
         },

@@ -4,7 +4,11 @@
 			"path": "."
 		}
 	],
-	"settings": {},
+	"settings": {
+		"mypy.runUsingActiveInterpreter": true,
+		"abl.checkProgressBinary": false,
+		"abl.warnConfigFile": false
+	},
 	"launch": {
 		"version": "0.2.0",
 		"configurations": []
