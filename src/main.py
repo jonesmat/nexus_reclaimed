@@ -1,12 +1,11 @@
 import ppb
 
 from entities.player import Player
+from scenes.world import WorldScene
 
 
-class Game(ppb.Scene):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.add(Player())
-
-
-ppb.run(starting_scene=Game)
+ppb.run(
+    starting_scene=WorldScene,
+    title="Nexus Reclaimed",
+    scene_kwargs={"player_sprite": Player},
+)
