@@ -48,10 +48,10 @@ The player's ultimate goal is to collect Aether fragments scattered across the f
 
 ## Milestone - Basic map and movement
 - [ ] Build a World from a single Tile.
-- [ ] Place a Character in the center of the World.
-- [ ] When a Player clicks in the World, move the Character to the clicked location.
-	- The camera should track the player's position.
-	- Stop the movement if the Character is at the Tile border.
+- [x] Place a Character in the center of the World.
+- [x] When a Player clicks in the World, move the Character to the clicked location.
+	- [x] The camera should track the player's position.
+- [ ] Stop the movement if the Character is at the Tile border.
 - [ ] Build the World from multiple Tiles.
 	- Tiles connect via connection pixels.
 - [ ] Add grass and rock pixels to Tiles.

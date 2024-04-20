@@ -15,6 +15,8 @@ class Player(ppb.Sprite):
         if self.position != self.target_position:
             self.move_to_target_position(update.time_delta)
 
+        update.scene.main_camera.center = self.position
+
     def on_button_pressed(self, event: ppb.events.ButtonPressed, signal):
         print(f"Player: on_button_pressed: {type(event.button)} - {event.position}")
 
