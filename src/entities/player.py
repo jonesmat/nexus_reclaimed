@@ -5,6 +5,7 @@ import math
 
 class Player(ppb.Sprite):
     image = ppb.Image("images/player.bmp")
+    layer = 10
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

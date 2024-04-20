@@ -1,4 +1,4 @@
-import ppb  # type: ignore
+import ppb
 
 
 class Grass(ppb.Sprite):
