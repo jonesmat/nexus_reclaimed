@@ -7,7 +7,10 @@
 	"settings": {
 		"mypy.runUsingActiveInterpreter": true,
 		"abl.checkProgressBinary": false,
-		"abl.warnConfigFile": false
+		"abl.warnConfigFile": false,
+		"black-formatter.args": [
+			"--line-length=120"
+		]
 	},
 	"launch": {
 		"version": "0.2.0",
