@@ -8,9 +8,7 @@ from entities.grass import Grass
 
 class WorldScene(ppb.Scene):
 
-    def __init__(
-        self, player_sprite: Type[ppb.Sprite], starting_map_tile_path: str, **kwargs
-    ):
+    def __init__(self, player_sprite: Type[ppb.Sprite], starting_map_tile_path: str, **kwargs):
         super().__init__(**kwargs)
 
         self.player_sprite = player_sprite
@@ -43,10 +41,7 @@ class WorldScene(ppb.Scene):
                     if color[3] == 0:  # TRANSPARENT
                         pass
 
-                    elif (
-                        color[:3] == WorldScene.WORLD_GEN_COLORS["PLAYER"]
-                        and not self.player
-                    ):
+                    elif color[:3] == WorldScene.WORLD_GEN_COLORS["PLAYER"] and not self.player:
                         self.player = self.player_sprite(position=(x, y))
                         self.add(self.player)
 
@@ -59,17 +54,15 @@ class WorldScene(ppb.Scene):
                         self.offscreen_sprites.append(entity)
 
     def on_update(self, event: ppb.events.Update, signal):
-        self.offscreen_chunking_distance = (
-            float(max(self.main_camera.width, self.main_camera.height)) * 1.5
-        ) / 2
+        self.offscreen_chunking_distance = (float(max(self.main_camera.width, self.main_camera.height)) * 1.5) / 2
         self._process_chunking()
 
         print(f"Items being rendered: {len(self.children)}")
 
     def _process_chunking(self):
-        if self.player and (
-            self.player.position - self.last_chuck_update_player_position
-        ).length > (self.offscreen_chunking_distance / 10):
+        if self.player and (self.player.position - self.last_chuck_update_player_position).length > (
+            self.offscreen_chunking_distance / 10
+        ):
             self.last_chuck_update_player_position = self.player.position
             self._chunk_load_offscreen_sprites()
             self._chunk_unload_offscreen_sprites()
@@ -78,11 +71,7 @@ class WorldScene(ppb.Scene):
         # Check for "offscreen" sprites that need to be added to the scene.
         sprites_remaining_offscreen: List[ppb.Sprite] = []
         for sprite in self.offscreen_sprites:
-            if (
-                self.player
-                and (sprite.position - self.player.position).length
-                <= self.offscreen_chunking_distance
-            ):
+            if self.player and (sprite.position - self.player.position).length <= self.offscreen_chunking_distance:
                 self.add(sprite)
             else:
                 sprites_remaining_offscreen.append(sprite)
@@ -95,8 +84,6 @@ class WorldScene(ppb.Scene):
             if type(child) not in [Grass, Boundary]:
                 continue
 
-            if (
-                child.position - self.player.position  # type: ignore
-            ).length > self.offscreen_chunking_distance:
+            if (child.position - self.player.position).length > self.offscreen_chunking_distance:  # type: ignore
                 self.remove(child)
                 self.offscreen_sprites.append(child)  # type: ignore

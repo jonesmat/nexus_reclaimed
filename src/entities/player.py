@@ -37,9 +37,7 @@ class Player(ppb.Sprite):
         if update.scene.main_camera.center != self.position:
             update.scene.main_camera.center = self.position
 
-    def _is_touching_entity(
-        self, scene: Scene, entity_type: Type[BaseSprite]
-    ) -> Optional[BaseSprite]:
+    def _is_touching_entity(self, scene: Scene, entity_type: Type[BaseSprite]) -> Optional[BaseSprite]:
         for entity in scene.get(kind=entity_type):
             if not (
                 self.left >= entity.right
