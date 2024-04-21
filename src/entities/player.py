@@ -24,8 +24,8 @@ class Player(ppb.Sprite):
         self.primary_button_held_down = False
 
     def on_update(self, update: ppb.events.Update, signal):
-        if self.position != self.target_position:
-            prev_position = self.position
+        if self.position != self.target_position:  # type: ignore
+            prev_position = self.position  # type: ignore
             self.position = self._determine_next_position(update.time_delta)
 
             if self._is_touching_entity(update.scene, Boundary):

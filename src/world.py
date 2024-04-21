@@ -1,5 +1,7 @@
 from typing import List, Optional, Type
 from ppb import Sprite, Vector, events, Scene
+from data_structs.quad_tree import QuadTree
+from data_structs.shapes import Rectangle
 from entities.boundary import Boundary
 from entities.grass import Grass
 from world_tile import WorldTile
@@ -12,47 +14,49 @@ class WorldScene(Scene):
 
         self.player_sprite = player_sprite
 
-        self.offscreen_chunking_distance = 0
-        self.last_chuck_update_player_position = Vector(-1000, -1000)
-        self.offscreen_sprites: List[Sprite] = []
+        self.world_width = 1000
+        self.world_height = 1000
+        world_boundary = Rectangle(0, 0, self.world_width, self.world_height)
+        self.quadtree = QuadTree(world_boundary, capacity=10)
+        self.last_scene_entity_update_player_position = Vector(-1000, -1000)
 
-        self.current_tile = WorldTile(starting_map_tile_path, tile_orientation="WEST")
+        self.current_tile = WorldTile(starting_map_tile_path, tile_orientation="NORTH")
         self.player = self.current_tile.load_player_sprite(self.player_sprite)
         self.add(self.player)
 
-        self.offscreen_sprites.extend(self.current_tile.load_tile_sprites())
+        self.quadtree.add(self.current_tile.load_tile_sprites())
 
     def on_update(self, event: events.Update, signal):
-        self.offscreen_chunking_distance = (float(max(self.main_camera.width, self.main_camera.height)) * 1.5) / 2
-        self._process_chunking()
+        self._update_scene_entities()
 
-        print(f"Items being rendered: {len(self.children)}")
+    def _update_scene_entities(self):
+        camera_width = self.main_camera.width
+        camera_height = self.main_camera.height
+        view_distance = (float(max(camera_width, camera_height)) * 1.5) / 2
 
-    def _process_chunking(self):
-        if (self.player.position - self.last_chuck_update_player_position).length > (
-            self.offscreen_chunking_distance / 10
-        ):
-            self.last_chuck_update_player_position = self.player.position
-            self._chunk_load_offscreen_sprites()
-            self._chunk_unload_offscreen_sprites()
+        if (self.player.position - self.last_scene_entity_update_player_position).length <= (view_distance / 10):
+            # The player hasn't moved far enough to recheck which entities should be rendered.
+            return
 
-    def _chunk_load_offscreen_sprites(self):
-        # Check for "offscreen" sprites that need to be added to the scene.
-        sprites_remaining_offscreen: List[Sprite] = []
-        for sprite in self.offscreen_sprites:
-            if (sprite.position - self.player.position).length <= self.offscreen_chunking_distance:
-                self.add(sprite)
-            else:
-                sprites_remaining_offscreen.append(sprite)
+        visible_sprites = []
 
-        self.offscreen_sprites = sprites_remaining_offscreen
+        view_range = Rectangle(
+            self.player.position.x - view_distance,
+            self.player.position.y - view_distance,
+            view_distance * 2,
+            view_distance * 2,
+        )
+        self.quadtree.query(view_range, visible_sprites)
 
-    def _chunk_unload_offscreen_sprites(self):
-        # Check for "onscreen" sprites in the scene that need to be moved "offscreen".
         for child in self.children:
             if type(child) not in [Grass, Boundary]:
                 continue
 
-            if (child.position - self.player.position).length > self.offscreen_chunking_distance:  # type: ignore
+            if child not in visible_sprites:
                 self.remove(child)
-                self.offscreen_sprites.append(child)  # type: ignore
+
+        for visible_sprite in visible_sprites:
+            if visible_sprite not in self.children:
+                self.add(visible_sprite)
+
+        self.last_scene_entity_update_player_position = self.player.position
