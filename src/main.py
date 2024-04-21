@@ -1,7 +1,7 @@
 import ppb
 
 from entities.player import Player
-from scenes.world import WorldScene
+from world import WorldScene
 
 
 ppb.run(

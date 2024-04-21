@@ -60,14 +60,16 @@ class WorldScene(ppb.Scene):
 
     def on_update(self, event: ppb.events.Update, signal):
         self.offscreen_chunking_distance = (
-            float(max(self.main_camera.width, self.main_camera.height)) * 1.2
-        )
+            float(max(self.main_camera.width, self.main_camera.height)) * 1.5
+        ) / 2
         self._process_chunking()
+
+        print(f"Items being rendered: {len(self.children)}")
 
     def _process_chunking(self):
         if self.player and (
             self.player.position - self.last_chuck_update_player_position
-        ).length > (self.offscreen_chunking_distance / 2):
+        ).length > (self.offscreen_chunking_distance / 10):
             self.last_chuck_update_player_position = self.player.position
             self._chunk_load_offscreen_sprites()
             self._chunk_unload_offscreen_sprites()
